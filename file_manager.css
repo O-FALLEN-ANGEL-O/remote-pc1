@@ -1,0 +1,132 @@
+/* File Manager Component Styles */
+.file-manager {
+    background-color: var(--sidebar-dark);
+    color: var(--text-dark);
+    width: 250px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-dark);
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.file-manager-header {
+    background-color: #1a2234;
+    color: white;
+    padding: 12px 16px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.file-manager-header .refresh-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.file-manager-header .refresh-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.file-manager-header .refresh-btn.rotating svg {
+    animation: rotate 1s linear;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.file-manager-actions {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.action-btn {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.action-btn:active {
+    transform: translateY(1px);
+}
+
+/* Light theme overrides */
+.light-mode .file-manager {
+    background-color: var(--sidebar-light);
+    color: var(--text-light);
+    box-shadow: var(--shadow-light);
+}
+
+.light-mode .file-manager-header {
+    background-color: var(--accent);
+}
+
+/* Folder list styles */
+.folder-list {
+    padding: 8px;
+}
+
+.folder-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.folder-item:hover {
+    background-color: var(--hover-dark);
+}
+
+.folder-item.active {
+    background-color: var(--accent);
+    color: white;
+}
+
+.light-mode .folder-item:hover {
+    background-color: var(--hover-light);
+}
+
+.light-mode .folder-item.active {
+    background-color: var(--accent);
+    color: white;
+}
+
+.folder-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+}
+
+.folder-name {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .file-manager {
+        width: 100%;
+    }
+}

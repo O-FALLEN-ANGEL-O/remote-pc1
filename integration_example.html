@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager Integration Example</title>
+    <style>
+        /* Website's existing styles */
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #1e293b;
+            --text-color: #333;
+            --light-bg: #f8fafc;
+            --dark-bg: #0f172a;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+        
+        .navbar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .navbar-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+        }
+        
+        .content {
+            flex: 1;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        /* Dark mode toggle */
+        .theme-toggle {
+            background: none;
+            border: 2px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: white;
+        }
+        
+        body.dark-mode .content {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Existing website navbar -->
+    <nav class="navbar">
+        <h1>My Website</h1>
+        <div class="navbar-links">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    </nav>
+    
+    <!-- Main content area -->
+    <div class="main-content">
+        <!-- Sidebar where file manager will be injected -->
+        <div class="sidebar" id="fileManagerContainer">
+            <!-- File manager will be injected here -->
+        </div>
+        
+        <!-- Main content -->
+        <div class="content">
+            <h2>File Manager Integration</h2>
+            <p>This example demonstrates how to integrate the file manager component into an existing website without affecting other code.</p>
+            
+            <div id="selectedFolderInfo">
+                <p>Select a folder from the file manager to see its details here.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2023 My Website. All rights reserved.</p>
+    </footer>
+
+    <!-- Load the icons.js file first -->
+    <script src="./icons.js"></script>
+    
+    <!-- Load the integration script -->
+    <script src="./integrate_file_manager.js"></script>
+    
+    <script>
+        // Initialize the file manager
+        window.FileManagerIntegration.init('#fileManagerContainer');
+        
+        // Listen for folder selection events
+        document.addEventListener('DOMContentLoaded', function() {
+            const folderList = document.getElementById('folderList');
+            if (folderList) {
+                folderList.addEventListener('folderSelected', function(event) {
+                    // Update the content area with selected folder info
+                    const selectedFolderInfo = document.getElementById('selectedFolderInfo');
+                    selectedFolderInfo.innerHTML = `
+                        <h3>Selected Folder: ${event.detail.name}</h3>
+                        <p>You selected the ${event.detail.name} folder.</p>
+                        <p>In a real application, this would display the contents of the selected folder.</p>
+                    `;
+                });
+            }
+        });
+        
+        // Theme toggling functionality
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            
+            // Update file manager theme
+            if (document.body.classList.contains('dark-mode')) {
+                document.documentElement.classList.remove('light-mode');
+                document.documentElement.classList.add('dark-mode');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+                document.documentElement.classList.add('light-mode');
+            }
+        }
+    </script>
+</body>
+</html>

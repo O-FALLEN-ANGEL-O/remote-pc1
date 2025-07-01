@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote PC Control</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23007bff' stroke-width='2'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'/><line x1='8' y1='21' x2='16' y2='21'/><line x1='12' y1='17' x2='12' y2='21'/></svg>">
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="page" style="display:none;">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="login-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                    </div>
+                    <h1>Remote PC Control</h1>
+                    <p>Connect to your remote PC</p>
+                </div>
+
+                <form id="login-form" class="login-form" style="display:none;">
+                    <div class="form-group">
+                        <label for="pc-name">PC Name</label>
+                        <input type="text" id="pc-name" placeholder="My Gaming PC">
+                    </div>
+                    <button type="submit" class="connect-btn" style="display:none;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+                            <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                            <line x1="12" y1="20" x2="12.01" y2="20"/>
+                        </svg>
+                        Connect
+                    </button>
+                </form>
+
+                <div id="saved-connections" class="saved-connections" style="display: none;">
+                    <h3>Saved Connections</h3>
+                    <div id="connections-list" class="connections-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" class="page">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>PC Remote Control</h1>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item" data-page="files">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10,9 9,9 8,9"/>
+                    </svg>
+                    Files
+                </a>
+                <a href="#" class="nav-item" data-page="screenshot">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    Screenshot
+                </a>
+                <a href="#" class="nav-item" data-page="terminal">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="4,17 10,11 4,5"/>
+                        <line x1="12" y1="19" x2="20" y2="19"/>
+                    </svg>
+                    Terminal
+                </a>
+                <a href="#" class="nav-item" data-page="control">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+                    </svg>
+                    Control
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="theme-toggle" id="theme-toggle">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+                
+                <button class="logout-btn" id="logout-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16,17 21,12 16,7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-content" class="content-page active">
+                <div class="page-header">
+                    <h1>System Dashboard</h1>
+                    <button class="refresh-btn" id="refresh-stats">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23,4 23,10 17,10"/>
+                            <polyline points="1,20 1,14 7,14"/>
+                            <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27m0 10.18A9 9 0 0 0 18.36 18.36l-1.27-1.27"/>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-info">
+                                <p class="stat-label">CPU Usage</p>
+                                <p class="stat-value" id="cpu-usage">--%</p>
+                                <p class="stat-detail" id="cpu-detail">-- cores</p>
+                            </div>
+                            <div class="stat-icon cpu">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
+                                    <rect x="9" y="9" width="6" height="6"/>
+                                    <line x1="9" y1="1" x2="9" y2="4"/>
+                                    <line x1="15" y1="1" x2="15" y2="4"/>
+                                    <line x1="9" y1="20" x2="9" y2="23"/>
+                                    <line x1="15" y1="20" x2="15" y2="23"/>
+                                    <line x1="20" y1="9" x2="23" y2="9"/>
+                                    <line x1="20" y1="14" x2="23" y2="14"/>
+                                    <line x1="1" y1="9" x2="4" y2="9"/>
+                                    <line x1="1" y1="14" x2="4" y2="14"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-info">
+                                <p class="stat-label">Memory Usage</p>
+                                <p class="stat-value" id="memory-usage">--%</p>
+                                <p class="stat-detail" id="memory-detail">-- / --</p>
+                            </div>
+                            <div class="stat-icon memory">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                    <line x1="8" y1="21" x2="16" y2="21"/>
+                                    <line x1="12" y1="17" x2="12" y2="21"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-info">
+                                <p class="stat-label">Disk Usage</p>
+                                <p class="stat-value" id="disk-usage">--%</p>
+                                <p class="stat-detail" id="disk-detail">-- / --</p>
+                            </div>
+                            <div class="stat-icon disk">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" id="battery-card" style="display: none;">
+                        <div class="stat-content">
+                            <div class="stat-info">
+                                <p class="stat-label">Battery</p>
+                                <p class="stat-value" id="battery-usage">--%</p>
+                                <p class="stat-detail" id="battery-detail">--</p>
+                            </div>
+                            <div class="stat-icon battery">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="1" y="6" width="18" height="12" rx="2" ry="2"/>
+                                    <line x1="23" y1="13" x2="23" y2="11"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <div class="chart-card">
+                        <h3>System Information</h3>
+                        <div class="system-info" id="system-info">
+                            <div class="info-group">
+                                <h4>Operating System</h4>
+                                <p id="os-name">--</p>
+                                <p id="os-version">--</p>
+                                <p id="os-arch">--</p>
+                            </div>
+                            <div class="info-group">
+                                <h4>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12,6 12,12 16,14"/>
+                                    </svg>
+                                    Uptime
+                                </h4>
+                                <p id="uptime">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Files Page -->
+            <div id="files-content" class="content-page">
+                <div class="file-manager-container">
+                    <aside class="file-manager-sidebar">
+                        <div class="file-manager-header">
+                            <h2>File Manager</h2>
+                            <button id="refresh-files" title="Refresh">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="23,4 23,10 17,10"/>
+                                    <polyline points="1,20 1,14 7,14"/>
+                                    <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27m0 10.18A9 9 0 0 0 18.36 18.36l-1.27-1.27"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <nav class="file-manager-nav">
+                            <button class="file-manager-btn">New Folder</button>
+                            <button class="file-manager-btn">Text File</button>
+                            <button class="file-manager-btn">HTML File</button>
+                            <button class="file-manager-btn">Upload Files</button>
+                            <button class="file-manager-btn">Settings</button>
+                        </nav>
+                    </aside>
+                    <main class="file-manager-main">
+                        <div class="file-manager-topbar">
+                            <input type="search" id="file-search" placeholder="Search criteria in here..." />
+                            <button id="files-back-btn" class="back-btn" style="display:none; margin-left: 1rem;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="19" y1="12" x2="5" y2="12"/>
+                                    <polyline points="12,19 5,12 12,5"/>
+                                </svg>
+                                Back
+                            </button>
+                        </div>
+                        <div id="breadcrumb" class="breadcrumb" style="margin-bottom: 1rem;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9,22 9,12 15,12 15,22"/>
+                            </svg>
+                            <span class="breadcrumb-item active">Root</span>
+                        </div>
+                        <div class="file-manager-content">
+                            <div class="disk-section">
+                                <h2>My Drives</h2>
+                            <div class="disk-grid">
+                                    <div class="disk-card" style="background-color: #f0f0f0;">
+                                        <div class="folder-icon" id="local-disk-icon"></div>
+                                        <p>Local Disk (C:)</p>
+                                    </div>
+                                    <div class="disk-card" style="background-color: #f9e1d0;">
+                                        <div class="folder-icon" id="data-disk-icon"></div>
+                                        <p>Data (D:)</p>
+                                    </div>
+                                    <div class="disk-card" style="background-color: #f9e6d0;">
+                                        <div class="folder-icon" id="documents-icon"></div>
+                                        <p>Documents</p>
+                                    </div>
+                                    <div class="disk-card" style="background-color: #f9e6d0;">
+                                        <div class="folder-icon" id="downloads-icon"></div>
+                                        <p>Downloads</p>
+                                    </div>
+                                    <div class="disk-card" style="background-color: #f9f0d0;">
+                                        <div class="folder-icon" id="pictures-icon"></div>
+                                        <p>Pictures</p>
+                                    </div>
+                                    <div class="disk-card" style="background-color: #f9f0d0;">
+                                        <div class="folder-icon" id="music-icon"></div>
+                                        <p>Music</p>
+                                    </div>
+                                    <div class="disk-card" style="background-color: #d7e3e0;">
+                                        <div class="folder-icon" id="videos-icon"></div>
+                                        <p>Videos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="file-manager-table" style="display:none;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Size</th>
+                                        <th>Permissions</th>
+                                        <th>Date</th>
+                                        <th>UID/GID</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="files-list">
+                                    <!-- Files will be dynamically inserted here -->
+                                </tbody>
+                            </table>
+                            <div id="files-empty" class="empty-state" style="display: none;">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                <p>No files or folders found</p>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <!-- Screenshot Page -->
+            <div id="screenshot-content" class="content-page">
+                <div class="page-header">
+                    <h1>Remote Screenshot</h1>
+                    <div class="header-actions">
+                        <button class="refresh-btn" id="refresh-screenshot">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23,4 23,10 17,10"/>
+                                <polyline points="1,20 1,14 7,14"/>
+                                <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27m0 10.18A9 9 0 0 0 18.36 18.36l-1.27-1.27"/>
+                            </svg>
+                            Refresh
+                        </button>
+                        <button class="download-btn" id="download-screenshot" style="display: none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7,10 12,15 17,10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Download
+                        </button>
+                    </div>
+                </div>
+
+                <div class="screenshot-container">
+                    <div id="screenshot-loading" class="loading-container">
+                        <div class="spinner"></div>
+                        <p>Capturing screenshot...</p>
+                    </div>
+                    
+                    <div id="screenshot-display" class="screenshot-display" style="display: none;">
+                        <img id="screenshot-img" src="" alt="Remote Desktop Screenshot">
+                        <p id="screenshot-timestamp" class="screenshot-timestamp"></p>
+                    </div>
+                    
+                    <div id="screenshot-error" class="error-state" style="display: none;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                        <p>Failed to capture screenshot</p>
+                        <button class="retry-btn" onclick="captureScreenshot()">Try Again</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Page -->
+            <div id="terminal-content" class="content-page">
+                <div class="page-header">
+                    <h1>Remote Terminal</h1>
+                    <button class="clear-btn" id="clear-terminal">Clear</button>
+                </div>
+
+                <div class="terminal-container">
+                    <div class="terminal" id="terminal">
+                        <div id="terminal-output" class="terminal-output">
+                            <div class="terminal-welcome">
+                                <p>Remote Terminal Ready</p>
+                                <p>Type commands and press Enter to execute</p>
+                                <p class="terminal-hint">Use ↑↓ arrows to navigate command history</p>
+                            </div>
+                        </div>
+                        <div class="terminal-input-line">
+                            <span class="terminal-prompt">$</span>
+                            <input type="text" id="terminal-input" class="terminal-input" placeholder="Enter command..." autocomplete="off">
+                            <button id="execute-command" class="execute-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"/>
+                                    <polygon points="22,2 15,22 11,13 2,9 22,2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-suggestions">
+                    <h3>Common Commands</h3>
+                    <div class="suggestions-grid">
+                        <button class="suggestion-btn" data-command="dir">
+                            <div class="suggestion-cmd">dir</div>
+                            <div class="suggestion-desc">List directory contents (Windows)</div>
+                        </button>
+                        <button class="suggestion-btn" data-command="ls -la">
+                            <div class="suggestion-cmd">ls -la</div>
+                            <div class="suggestion-desc">List directory contents (Linux/Mac)</div>
+                        </button>
+                        <button class="suggestion-btn" data-command="ipconfig">
+                            <div class="suggestion-cmd">ipconfig</div>
+                            <div class="suggestion-desc">Show network configuration (Windows)</div>
+                        </button>
+                        <button class="suggestion-btn" data-command="ifconfig">
+                            <div class="suggestion-cmd">ifconfig</div>
+                            <div class="suggestion-desc">Show network configuration (Linux/Mac)</div>
+                        </button>
+                        <button class="suggestion-btn" data-command="tasklist">
+                            <div class="suggestion-cmd">tasklist</div>
+                            <div class="suggestion-desc">Show running processes (Windows)</div>
+                        </button>
+                        <button class="suggestion-btn" data-command="ps aux">
+                            <div class="suggestion-cmd">ps aux</div>
+                            <div class="suggestion-desc">Show running processes (Linux/Mac)</div>
+                        </button>
+                        <button class="suggestion-btn" data-command="systeminfo">
+                            <div class="suggestion-cmd">systeminfo</div>
+                            <div class="suggestion-desc">Show system information (Windows)</div>
+                        </button>
+                        <button class="suggestion-btn" data-command="uname -a">
+                            <div class="suggestion-cmd">uname -a</div>
+                            <div class="suggestion-desc">Show system information (Linux/Mac)</div>
+                        </button>
+                        <button class="suggestion-btn" data-command="whoami">
+                            <div class="suggestion-cmd">whoami</div>
+                            <div class="suggestion-desc">Show current user</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Page -->
+            <div id="control-content" class="content-page">
+                <div class="page-header">
+                    <h1>System Control</h1>
+                </div>
+
+                <div class="warning-banner">
+                    <div class="warning-content">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                        <div>
+                            <h3>Important Warning</h3>
+                            <p>These controls will immediately affect the remote system. Make sure to save any important work before proceeding.</p>
+                            <ul>
+                                <li>Shutdown will completely power off the remote PC</li>
+                                <li>Reboot will restart the remote PC</li>
+                                <li>You may lose connection during these operations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-grid">
+                    <div class="control-card">
+                        <div class="control-icon shutdown">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+                                <line x1="12" y1="2" x2="12" y2="12"/>
+                            </svg>
+                        </div>
+                        <h3>Shutdown System</h3>
+                        <p>Completely power off the remote PC. This will close all applications and shut down the operating system.</p>
+                        <button class="control-btn shutdown-btn" id="shutdown-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+                                <line x1="12" y1="2" x2="12" y2="12"/>
+                            </svg>
+                            Shutdown
+                        </button>
+                    </div>
+
+                    <div class="control-card">
+                        <div class="control-icon reboot">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23,4 23,10 17,10"/>
+                                <polyline points="1,20 1,14 7,14"/>
+                                <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27m0 10.18A9 9 0 0 0 18.36 18.36l-1.27-1.27"/>
+                            </svg>
+                        </div>
+                        <h3>Restart System</h3>
+                        <p>Restart the remote PC. The system will shut down and automatically boot back up.</p>
+                        <button class="control-btn reboot-btn" id="reboot-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23,4 23,10 17,10"/>
+                                <polyline points="1,20 1,14 7,14"/>
+                                <path d="M20.49 9A9 9 0 0 0 5.64 5.64l1.27 1.27m0 10.18A9 9 0 0 0 18.36 18.36l-1.27-1.27"/>
+                            </svg>
+                            Restart
+                        </button>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>What happens next?</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-bullet"></div>
+                            <p><strong>After Shutdown:</strong> The remote PC will be completely powered off. You'll need physical access to turn it back on, or use Wake-on-LAN if configured.</p>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-bullet"></div>
+                            <p><strong>After Reboot:</strong> The PC will restart automatically. You can reconnect once the system boots up and the remote control service starts.</p>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-bullet"></div>
+                            <p><strong>Connection Loss:</strong> Your current session will be terminated immediately. Any unsaved work on the remote PC may be lost.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <h3 id="modal-title">Confirm Action</h3>
+            </div>
+            <p id="modal-message">Are you sure you want to proceed?</p>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" id="modal-cancel">Cancel</button>
+                <button class="modal-btn confirm" id="modal-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="icons.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

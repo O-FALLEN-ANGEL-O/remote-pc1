@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager UI Showcase</title>
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --sidebar-light: #ffffff;
+            --sidebar-dark: #1e293b;
+            --text-light: #1e293b;
+            --text-dark: #f8fafc;
+            --card-light: #f0f0f0;
+            --card-dark: #1e293b;
+            --accent: #3b82f6;
+            --hover-light: #e2e8f0;
+            --hover-dark: #334155;
+            --border-radius: 6px;
+            --shadow-light: 0 2px 5px rgba(0, 0, 0, 0.08);
+            --shadow-dark: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--hover-light);
+        }
+        
+        .dark-mode header {
+            border-bottom: 1px solid var(--hover-dark);
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .theme-toggle {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .theme-toggle:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        
+        .theme-toggle:active {
+            transform: translateY(1px);
+        }
+
+        .ui-showcase {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .ui-section {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode .ui-section {
+            box-shadow: var(--shadow-dark);
+        }
+
+        .ui-section h2 {
+            padding: 0 20px;
+        }
+
+        .ui-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .folder-icons-section {
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .dark-mode .folder-icons-section {
+            box-shadow: var(--shadow-dark);
+        }
+
+        .light-mode .folder-icons-section {
+            background-color: var(--card-light);
+        }
+
+        .dark-mode .folder-icons-section {
+            background-color: var(--card-dark);
+        }
+
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .folder-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .folder-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark-mode .folder-item {
+            box-shadow: var(--shadow-dark);
+        }
+        
+        .dark-mode .folder-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .light-mode .folder-item {
+            background-color: var(--sidebar-light);
+        }
+
+        .dark-mode .folder-item {
+            background-color: var(--sidebar-dark);
+        }
+
+        .folder-icon {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 10px;
+        }
+
+        .folder-name {
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        
+        .dark-mode .folder-name {
+            color: var(--text-dark);
+        }
+
+        /* SVG specific styles */
+        .folder-icon svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .folder-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="container">
+        <header>
+            <h1>File Manager UI Showcase</h1>
+            <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+        </header>
+
+        <div class="ui-showcase">
+            <div class="ui-section">
+                <h2>Light Theme</h2>
+                <object class="ui-image" data="file_manager_ui.svg" type="image/svg+xml" width="1200" height="800">Light Theme UI</object>
+            </div>
+
+            <div class="ui-section">
+                <h2>Dark Theme</h2>
+                <object class="ui-image" data="file_manager_ui_dark.svg" type="image/svg+xml" width="1200" height="800">Dark Theme UI</object>
+            </div>
+        </div>
+
+        <div class="folder-icons-section">
+            <h2>Updated Folder Icons</h2>
+            <p>These are the simplified flat folder icons from icons.js:</p>
+            
+            <div class="folder-grid" id="folderGrid">
+                <!-- Folder icons will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="./icons.js"></script>
+    <script>
+        // Theme toggling functionality
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+        }
+
+        // Render folder icons to the grid
+        function renderFolderIcons(icons) {
+            const folderGrid = document.getElementById('folderGrid');
+            
+            // Define folder names for display
+            const folderNames = {
+                localDisk: 'Local Disk (C:)',
+                dataDisk: 'Data (D:)',
+                documents: 'Documents',
+                downloads: 'Downloads',
+                pictures: 'Pictures',
+                music: 'Music',
+                videos: 'Videos'
+            };
+            
+            // Create a folder item for each icon
+            for (const [key, svg] of Object.entries(icons)) {
+                const folderItem = document.createElement('div');
+                folderItem.className = 'folder-item';
+                
+                const folderIcon = document.createElement('div');
+                folderIcon.className = 'folder-icon';
+                folderIcon.innerHTML = svg;
+                
+                const folderName = document.createElement('div');
+                folderName.className = 'folder-name';
+                folderName.textContent = folderNames[key] || key;
+                
+                folderItem.appendChild(folderIcon);
+                folderItem.appendChild(folderName);
+                folderGrid.appendChild(folderItem);
+            }
+        }
+
+        // Alternative method to load icons if ES modules aren't supported
+        function loadIconsAlternative() {
+            // Check if fileIcons is already defined globally
+            if (typeof fileIcons !== 'undefined') {
+                renderFolderIcons(fileIcons);
+            } else {
+                // Create a script element to load icons.js
+                const script = document.createElement('script');
+                script.src = './icons.js';
+                script.onload = function() {
+                    if (typeof fileIcons !== 'undefined') {
+                        renderFolderIcons(fileIcons);
+                    }
+                };
+                script.onerror = function() {
+                    document.getElementById('folderGrid').innerHTML = 
+                        '<p>Error loading icons. Please check if icons.js exists.</p>';
+                };
+                document.head.appendChild(script);
+            }
+        }
+
+        // Render folder icons to the grid
+        function renderFolderIcons(icons) {
+            const folderGrid = document.getElementById('folderGrid');
+            
+            // Define folder names for display
+            const folderNames = {
+                localDisk: 'Local Disk (C:)',
+                dataDisk: 'Data (D:)',
+                documents: 'Documents',
+                downloads: 'Downloads',
+                pictures: 'Pictures',
+                music: 'Music',
+                videos: 'Videos'
+            };
+            
+            // Create a folder item for each icon
+            for (const [key, svg] of Object.entries(icons)) {
+                const folderItem = document.createElement('div');
+                folderItem.className = 'folder-item';
+                
+                const folderIcon = document.createElement('div');
+                folderIcon.className = 'folder-icon';
+                folderIcon.innerHTML = svg;
+                
+                const folderName = document.createElement('div');
+                folderName.className = 'folder-name';
+                folderName.textContent = folderNames[key] || key;
+                
+                folderItem.appendChild(folderIcon);
+                folderItem.appendChild(folderName);
+                folderGrid.appendChild(folderItem);
+            }
+        }
+
+        // Load icons when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // fileIcons should be available from the icons.js script
+            if (window.fileIcons) {
+                renderFolderIcons(window.fileIcons);
+            } else {
+                document.getElementById('folderGrid').innerHTML = 
+                    '<p>Error loading icons. Please check if icons.js is properly loaded.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

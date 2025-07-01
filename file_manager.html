@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager</title>
+    <link rel="stylesheet" href="file_manager.css">
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --sidebar-light: #ffffff;
+            --sidebar-dark: #1e293b;
+            --text-light: #1e293b;
+            --text-dark: #f8fafc;
+            --card-light: #f0f0f0;
+            --card-dark: #1e293b;
+            --accent: #3b82f6;
+            --hover-light: #e2e8f0;
+            --hover-dark: #334155;
+            --border-radius: 6px;
+            --shadow-light: 0 2px 5px rgba(0, 0, 0, 0.08);
+            --shadow-dark: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        body.light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .content-area {
+            flex: 1;
+            background-color: var(--card-dark);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-dark);
+        }
+
+        .light-mode .content-area {
+            background-color: var(--card-light);
+            box-shadow: var(--shadow-light);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .theme-toggle:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    
+    <div class="container">
+        <!-- File Manager Component -->
+        <div class="file-manager">
+            <div class="file-manager-header">
+                <span>File Manager</span>
+                <button class="refresh-btn" title="Refresh">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 4v6h-6"/>
+                        <path d="M1 20v-6h6"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="file-manager-actions">
+                <button class="action-btn">New Folder</button>
+                <button class="action-btn">Text File</button>
+                <button class="action-btn">HTML File</button>
+                <button class="action-btn">Upload Files</button>
+                <button class="action-btn">Settings</button>
+            </div>
+            
+            <div class="folder-list" id="folderList">
+                <!-- Folders will be inserted here by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content-area">
+            <h2>Content Area</h2>
+            <p>Select a folder or file from the file manager to view its contents here.</p>
+        </div>
+    </div>
+
+    <script src="./icons.js"></script>
+    <script>
+        // Theme toggling functionality
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+        }
+
+        // Render folder icons to the list
+        function renderFolderList() {
+            const folderList = document.getElementById('folderList');
+            
+            // Define folder names for display
+            const folderData = [
+                { key: 'localDisk', name: 'Local Disk (C:)' },
+                { key: 'dataDisk', name: 'Data (D:)' },
+                { key: 'documents', name: 'Documents' },
+                { key: 'downloads', name: 'Downloads' },
+                { key: 'pictures', name: 'Pictures' },
+                { key: 'music', name: 'Music' },
+                { key: 'videos', name: 'Videos' }
+            ];
+            
+            // Create a folder item for each icon
+            folderData.forEach(folder => {
+                const folderItem = document.createElement('div');
+                folderItem.className = 'folder-item';
+                
+                const folderIcon = document.createElement('div');
+                folderIcon.className = 'folder-icon';
+                folderIcon.innerHTML = window.fileIcons[folder.key];
+                
+                const folderName = document.createElement('div');
+                folderName.className = 'folder-name';
+                folderName.textContent = folder.name;
+                
+                folderItem.appendChild(folderIcon);
+                folderItem.appendChild(folderName);
+                folderList.appendChild(folderItem);
+                
+                // Add click event
+                folderItem.addEventListener('click', function() {
+                    // Remove active class from all items
+                    document.querySelectorAll('.folder-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Update content area (in a real app, this would load folder contents)
+                    document.querySelector('.content-area').innerHTML = `
+                        <h2>${folder.name}</h2>
+                        <p>Viewing contents of ${folder.name}</p>
+                    `;
+                });
+            });
+        }
+
+        // Load folder list when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.fileIcons) {
+                renderFolderList();
+            } else {
+                document.getElementById('folderList').innerHTML = 
+                    '<p style="padding: 10px;">Error loading icons. Please check if icons.js is properly loaded.</p>';
+            }
+            
+            // Add click event to refresh button
+            document.querySelector('.refresh-btn').addEventListener('click', function() {
+                // In a real app, this would refresh the folder list
+                this.classList.add('rotating');
+                setTimeout(() => {
+                    this.classList.remove('rotating');
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
