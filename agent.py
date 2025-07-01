@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnec
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-import pyautogui
+# Removed top-level import of pyautogui to fix DISPLAY KeyError
 import psutil
 import subprocess
 import os
@@ -50,6 +50,7 @@ def check_auth(token: str):
 
 @app.websocket("/ws/screen")
 async def websocket_screen(websocket: WebSocket):
+    import pyautogui
     await websocket.accept()
     try:
         while True:
@@ -68,6 +69,7 @@ async def websocket_screen(websocket: WebSocket):
 
 @app.websocket("/ws/control")
 async def websocket_control(websocket: WebSocket):
+    import pyautogui
     await websocket.accept()
     try:
         while True:
@@ -123,6 +125,7 @@ def get_stats():
 
 @app.get("/screenshot")
 async def screenshot(background_tasks: BackgroundTasks):
+    import pyautogui
     screenshot_path = "screenshot.png"
     await asyncio.to_thread(pyautogui.screenshot, screenshot_path)
 
