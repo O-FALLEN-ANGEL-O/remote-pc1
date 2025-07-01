@@ -1,4 +1,3 @@
-
 // Global variables
 let currentConnection = null;
 let currentPath = '';
@@ -114,17 +113,13 @@ const storage = {
 
 // API functions
 async function apiCall(endpoint, options = {}) {
-    if (!currentConnection || !currentConnection.ip) {
-        console.error('apiCall called but no connection established:', currentConnection);
-        throw new Error('No connection established');
-    }
-    
-    const url = `http://${currentConnection.ip}:8000${endpoint}`;
+    // Use relative URL to avoid CORS and mixed content issues
+    const url = `${window.location.origin}${endpoint}`;
     console.log('apiCall fetching URL:', url);
     const config = {
         method: 'GET',
         headers: {
-            'X-API-Token': currentConnection.token || '',
+            'X-API-Token': currentConnection?.token || '',
             'Content-Type': 'application/json',
         },
         ...options
@@ -142,7 +137,7 @@ async function apiCall(endpoint, options = {}) {
 
 async function testConnection(ip, token) {
     try {
-        const url = `http://${ip}:8000/stats`;
+        const url = `${window.location.origin}/stats`;
         const response = await fetch(url, {
             headers: { 'X-API-Token': token }
         });
