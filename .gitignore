@@ -1,0 +1,11 @@
+# secrets and runtime data
+config.json
+config.tmp
+audit.log
+screenshot.png
+__pycache__/
+*.pyc
+.venv/
+# frontend
+web/node_modules/
+web/*.tsbuildinfo

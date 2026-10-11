@@ -1,0 +1,166 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design tokens. Light is the base; .dark overrides. Everything references these. */
+:root {
+  --bg: oklch(0.985 0.002 250);
+  --bg-subtle: oklch(0.965 0.003 250);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.975 0.003 250);
+  --border: oklch(0.91 0.005 250);
+  --border-strong: oklch(0.84 0.008 250);
+  --fg: oklch(0.21 0.012 260);
+  --fg-muted: oklch(0.48 0.012 260);
+  --fg-subtle: oklch(0.62 0.01 260);
+  --accent: oklch(0.6 0.15 200);
+  --accent-fg: oklch(0.99 0 0);
+  --accent-soft: oklch(0.6 0.15 200 / 0.12);
+  --ok: oklch(0.62 0.16 150);
+  --warn: oklch(0.72 0.16 70);
+  --danger: oklch(0.6 0.21 25);
+  --chart-2: oklch(0.62 0.17 290);
+  --chart-3: oklch(0.7 0.15 60);
+  --ring: oklch(0.6 0.15 200 / 0.5);
+  --shadow: 0 1px 2px oklch(0 0 0 / 0.05), 0 4px 16px -4px oklch(0 0 0 / 0.06);
+}
+
+.dark {
+  --bg: oklch(0.145 0.006 260);
+  --bg-subtle: oklch(0.17 0.007 260);
+  --surface: oklch(0.185 0.008 260);
+  --surface-2: oklch(0.215 0.009 260);
+  --border: oklch(0.27 0.01 260);
+  --border-strong: oklch(0.34 0.012 260);
+  --fg: oklch(0.96 0.004 260);
+  --fg-muted: oklch(0.72 0.01 260);
+  --fg-subtle: oklch(0.56 0.012 260);
+  --accent: oklch(0.8 0.13 195);
+  --accent-fg: oklch(0.18 0.02 220);
+  --accent-soft: oklch(0.8 0.13 195 / 0.13);
+  --ok: oklch(0.78 0.16 155);
+  --warn: oklch(0.82 0.15 80);
+  --danger: oklch(0.7 0.19 25);
+  --chart-2: oklch(0.72 0.15 295);
+  --chart-3: oklch(0.8 0.14 65);
+  --ring: oklch(0.8 0.13 195 / 0.55);
+  --shadow: 0 1px 0 oklch(1 0 0 / 0.03) inset, 0 8px 24px -12px oklch(0 0 0 / 0.6);
+}
+
+@theme inline {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-ring: var(--ring);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--accent-soft);
+  }
+  input[type='range'] {
+    accent-color: var(--accent);
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* xterm container */
+.xterm {
+  padding: 10px 12px;
+  height: 100%;
+}
+.xterm .xterm-viewport {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-fade-up {
+  animation: fade-up 0.25s ease-out both;
+}
